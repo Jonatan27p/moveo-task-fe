@@ -1,35 +1,49 @@
 // src/pages/AdminPage.jsx
+import { createTag, fetchTags, updateTag, type Tag } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Tag from "@/customComponents/tag";
+import TagItem from "@/customComponents/tag";
 import { Label } from "@radix-ui/react-label";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function AdminPage() {
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetchAndSetTags();
+  }, []);
+
+  async function fetchAndSetTags() {
+    const fetchedTags = await fetchTags();
+    setTags(fetchedTags);
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (tag.trim() !== "" && !tags.includes(tag)) {
-      setTags([...tags, tag.trim()]);
+    if (tag.trim() !== "" && !tags.some((t) => t.name === tag)) {
+      // setTags([...tags, { name: tag.trim(), id: new Date().getTime() }]);
       setTag("");
+      await createTag(tag.trim());
+      fetchAndSetTags();
     }
   };
 
   const handleUpdate = (newValue: string) => {
     if (
-      editingIndex === null ||
+      editingId === null ||
       newValue.trim() === "" ||
-      tags.includes(newValue)
+      tags.some((tag) => tag.name === newValue)
     )
       return;
 
     const updated = [...tags];
-    updated[editingIndex] = newValue;
+    const index = updated.findIndex((tag) => tag.id === editingId);
+    updated[index] = { ...updated[index], name: newValue };
+    updateTag(editingId, newValue);
     setTags(updated);
-    setEditingIndex(null);
+    setEditingId(null);
   };
 
   return (
@@ -54,14 +68,14 @@ export default function AdminPage() {
         <div className="w-full space-y-2">
           {tags.length > 0 && (
             <>
-              {tags.map((t, idx) => (
-                <Tag
-                  key={idx}
-                  initialValue={t}
-                  setEditingIdx={() => setEditingIndex(idx)}
+              {tags.map((tag) => (
+                <TagItem
+                  key={tag.id}
+                  initialValue={tag.name}
+                  setEditingIdx={() => setEditingId(tag.id)}
                   onSave={handleUpdate}
-                  onCancel={() => setEditingIndex(null)}
-                  disabled={editingIndex !== idx}
+                  onCancel={() => setEditingId(null)}
+                  disabled={editingId !== tag.id}
                 />
               ))}
             </>
