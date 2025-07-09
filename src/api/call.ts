@@ -1,10 +1,12 @@
 import axios from "axios";
 import type { Tag } from "./tag";
+import type { Task } from "./task";
 
 export interface Call {
   id: number;
   name: string;
   Tags: Tag[];
+  Tasks: Task[];
 }
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";

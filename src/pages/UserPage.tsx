@@ -63,7 +63,7 @@ export default function UserPage() {
         </div>
       </div>
       {editingId && calls.find((c) => c.id === editingId) && (
-        <CallDetails call={calls.find((c) => c.id === editingId)!} />
+        <CallDetails key={editingId} callId={editingId} />
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { fetchCall, type Call } from "@/api/call";
+import { type Call } from "@/api/call";
 import { updateCallTag } from "@/api/callTag";
 import { fetchTags, type Tag } from "@/api/tag";
 import { MultiSelect } from "@/components/ui/multiSelect";
@@ -13,12 +13,11 @@ export default function SelectTags({ call }: SelectTagsProps) {
 
   useEffect(() => {
     fetchAndSetTags();
-  }, [call.id]);
+  }, []);
 
   const fetchAndSetTags = async () => {
     const tags = await fetchTags();
-    const currCall = await fetchCall(call.id);
-    setSelectedTags(currCall?.Tags.map((tag) => tag.id) || []);
+    setSelectedTags(call?.Tags.map((tag) => tag.id) || []);
     setTagsOptions(tags);
   };
 
