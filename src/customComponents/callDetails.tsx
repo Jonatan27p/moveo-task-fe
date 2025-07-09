@@ -27,7 +27,7 @@ function CallDetails({ callId }: CallDetailsProps) {
       {call && (
         <div className="flex flex-col w-2/3 p-6 gap-4">
           <h4 className="scroll-m-20 text-xl font-semibold tracking-tight w-full">
-            {call.id} - {call.name}
+            {call.name}
           </h4>
           <SelectTags key={callId} call={call} />
           <Tasks key={callId * 123} call={call} />
