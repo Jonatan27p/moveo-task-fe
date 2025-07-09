@@ -1,5 +1,5 @@
 // src/pages/AdminPage.jsx
-import { createTag, fetchTags, updateTag, type Tag } from "@/api";
+import { createTag, fetchTags, updateTag, type Tag } from "@/api/tag";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TagItem from "@/customComponents/tag";
@@ -23,7 +23,6 @@ export default function AdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (tag.trim() !== "" && !tags.some((t) => t.name === tag)) {
-      // setTags([...tags, { name: tag.trim(), id: new Date().getTime() }]);
       setTag("");
       await createTag(tag.trim());
       fetchAndSetTags();
